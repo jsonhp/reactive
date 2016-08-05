@@ -11,13 +11,14 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "client")
 @NamedQueries({
-	@NamedQuery(name = "client.findAll", query= "SELECT client FROM Client cliente")
+	@NamedQuery(name = "client.findAll", query= "SELECT c FROM Client c"),
+	@NamedQuery(name = "client.findByIdentification", query= "SELECT c FROM Client c WHERE c.identification = :identification")
 })
 public class Client {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private int id, identification;
 	
 	private String name, lastname;
 
@@ -27,6 +28,14 @@ public class Client {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public int getIdentification() {
+		return this.identification;
+	}
+	
+	public void setIdentification(int identification) {
+		this.identification = identification;
 	}
 
 	public String getName() {

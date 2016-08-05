@@ -1,7 +1,5 @@
 package co.com.jsonhp.fly.dao;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -11,14 +9,15 @@ import rx.Observable;
 
 public class ClientDao {
 	
-	String queryFindAll = "client.findAll";
+	String queryFindByIdentification = "client.findByIdentification";
 	
 	@PersistenceContext
 	EntityManager entityManager;
 
-	public Observable<List<Client>> getAll() {
-		TypedQuery<Client> query = entityManager.createNamedQuery(queryFindAll, Client.class);
-		return Observable.just(query.getResultList());
+	public Observable<Client> getClientByIdentification(int identification) {
+		TypedQuery<Client> query = entityManager.createNamedQuery(queryFindByIdentification, Client.class);
+		query.setParameter("identification", identification);
+		return Observable.just(query.getResultList().get(0));
 	}
 
 }

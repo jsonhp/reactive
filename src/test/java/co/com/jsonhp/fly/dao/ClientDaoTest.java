@@ -2,7 +2,6 @@ package co.com.jsonhp.fly.dao;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -21,11 +20,10 @@ import rx.Observable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClientDaoTest {
-	
-	Client client1, client2;
-	List<Client> expected;
-	String queryFindAll = "client.findAll";
-	List<Client> myListClients;
+
+	Client receivedClient = new Client();
+	String queryFindByIdentification = "client.findByIdentification";
+	Client client = new Client();
 	
 	@InjectMocks
 	ClientDao clientDao;
@@ -35,39 +33,34 @@ public class ClientDaoTest {
 	
 	@Mock
 	TypedQuery<Client> query;
+	
+	@Mock
+	private List<Client> resultList;
 
 	@Before
 	public void setUp() {
-		client1 = new Client();
-		client1.setId(1);
-		client1.setName("JSon");
-		client1.setLastname("HP");
-		
-		client2 = new Client();
-		client2.setId(2);
-		client2.setName("Pinky");
-		client2.setLastname("HP");
-		
-		expected =  new ArrayList<Client>();
-		expected.add(client1);
-		expected.add(client2);
+		client = new Client();
+		client.setId(1);
+		client.setIdentification(1075274577);
+		client.setName("JSon");
+		client.setLastname("HP");
 	}
 	
 	@Test
-	public void debeObtenerTodosLosClientes() {
-		
+	public void mustObtainClientByIdentificaction() {
 		//Arrange
-		Mockito.when(entityManager.createNamedQuery(queryFindAll, Client.class)).thenReturn(query);
-		Mockito.when(query.getResultList()).thenReturn(expected);
+		int identificationClient = 1075274577;
+		Mockito.when(entityManager.createNamedQuery(queryFindByIdentification, Client.class)).thenReturn(query);
+		Mockito.when(query.getResultList()).thenReturn(resultList);
+		Mockito.when(query.getResultList().get(0)).thenReturn(client);
 		
 		//Act
-		Observable<List<Client>> listClients = clientDao.getAll();
-		listClients.subscribe(list -> myListClients = list);
+		Observable<Client> oservableClient = clientDao.getClientByIdentification(identificationClient);
+		oservableClient.subscribe(c -> receivedClient = c);
 		
 		//Assert
-		Mockito.verify(query).getResultList();
-		assertEquals(expected, myListClients);
-		
+		assertEquals(client,receivedClient);
+		Mockito.verify(query).setParameter("identification", identificationClient);
 	}
 	
 }

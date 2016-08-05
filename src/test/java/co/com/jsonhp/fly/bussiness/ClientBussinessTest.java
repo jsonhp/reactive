@@ -45,7 +45,7 @@ public class ClientBussinessTest {
 	@Test
 	public void VerificarSiExisteClienteEspecifico() {
 		//Arrange
-		Mockito.when(clientDao.getAll()).thenReturn(Observable.just(expected));
+		//Mockito.when(clientDao.getAll()).thenReturn(Observable.just(expected));
 		
 		
 	}
